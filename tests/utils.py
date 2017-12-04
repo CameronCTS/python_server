@@ -80,6 +80,24 @@ def edit(generator, changes):
         yield record
 
 
+def gen_profiles(number=5):
+        """Generate Mask profiles
+
+        Keyword Arguments:
+        number(int) -- The upper limit of generated records (default 5)
+
+        Yields:
+        dict        -- Record information
+
+        """
+        for i in xrange(number):
+            yield {
+                "wwuid": 900000000 + i,
+                "photo": "profiles/1617/00958-2019687.jpg",
+                "major": "Computer Science",
+        }
+
+
 @contextmanager
 def askanything(conn, askanythings=None):
     """Insert list of records into askanything table
