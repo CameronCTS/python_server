@@ -22,7 +22,15 @@ ASKANYTHING_VOTE_TABLE = Table('askanythingvotes', METADATA,
                                    'question_id', String(50), nullable=False),
                                Column('voter', String(75)))
 
-PROFILES_TABLE = Table('profiles1617', METADATA,
+PROFILES_TABLE = Table('profiles', METADATA,
+                        Column('id', String(50), primary_key=True),
+                        Column('wwuid', String(10), nullable=False),
+                        Column('photo', String(250)),
+                        Column('majors', String(500)),
+                        Column('username', String(105)),
+                        Column('gender', String(250)))
+
+PROFILES1617_TABLE = Table('profiles1617', METADATA,
                         Column('id', String(50), primary_key=True),
                         Column('wwuid', String(10), nullable=False),
                         Column('photo', String(250)),
@@ -100,7 +108,7 @@ def gen_profiles(number=5):
 
         """
         for i in xrange(number):
-            username = "archived.profile"
+            username = "test.profile"
             username += `i`
 
             yield {
@@ -145,6 +153,23 @@ def askanthingvote(conn, askanythingvotes=None):
     conn.execute(ASKANYTHING_VOTE_TABLE.insert(), askanythingvotes)
     yield askanythingvotes
     conn.execute(ASKANYTHING_VOTE_TABLE.delete())
+
+
+@contextmanager
+def archived_profile(conn, profiles=None):
+    """Insert list of records into profile table
+
+    Keyword Arguments:
+    conn(conn)               -- A connection object to the database
+    profiles(list(dict))     -- Records to be inserted into the db (default None)
+
+    """
+    if profiles is None:
+        profiles = list(gen_profiles())
+
+    conn.execute(PROFILES1617_TABLE.insert(), profiles)
+    yield profiles
+    conn.execute(PROFILES1617_TABLE.delete())
 
 
 @contextmanager
