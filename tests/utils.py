@@ -4,7 +4,7 @@
 from contextlib import contextmanager
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, MetaData, String, Table
+from sqlalchemy import Boolean, Column, DateTime, MetaData, String, Table, Integer
 
 from names import get_first_name, get_last_name
 
@@ -21,6 +21,14 @@ ASKANYTHING_VOTE_TABLE = Table('askanythingvotes', METADATA,
                                Column(
                                    'question_id', String(50), nullable=False),
                                Column('voter', String(75)))
+
+PROFILES_TABLE = Table('profiles1617', METADATA,
+                        Column('id', String(50), primary_key=True),
+                        Column('wwuid', String(10), nullable=False),
+                        Column('photo', String(250)),
+                        Column('majors', String(500)),
+                        Column('username', String(105)),
+                        Column('gender', String(250)))
 
 
 def gen_askanythings(number=5):
@@ -80,8 +88,9 @@ def edit(generator, changes):
         yield record
 
 
+# Generator to create archived user profiles
 def gen_profiles(number=5):
-        """Generate Mask profiles
+        """Generate Mask profilesaskanythings
 
         Keyword Arguments:
         number(int) -- The upper limit of generated records (default 5)
@@ -91,10 +100,16 @@ def gen_profiles(number=5):
 
         """
         for i in xrange(number):
+            username = "archived.profile"
+            username += `i`
+
             yield {
-                "wwuid": 900000000 + i,
+                "id" : 100 + i,
+                "wwuid": 9000000 + i,
                 "photo": "profiles/1617/00958-2019687.jpg",
-                "major": "Computer Science",
+                "majors": "Computer Science",
+                "username" : username, #Generates a new username archived.profile0, archived.profile1, etc.
+                "gender": "female"
         }
 
 
@@ -130,3 +145,20 @@ def askanthingvote(conn, askanythingvotes=None):
     conn.execute(ASKANYTHING_VOTE_TABLE.insert(), askanythingvotes)
     yield askanythingvotes
     conn.execute(ASKANYTHING_VOTE_TABLE.delete())
+
+
+@contextmanager
+def profile(conn, profiles=None):
+    """Insert list of records into profile table
+
+    Keyword Arguments:
+    conn(conn)               -- A connection object to the database
+    profiles(list(dict))     -- Records to be inserted into the db (default None)
+
+    """
+    if profiles is None:
+        profiles = list(gen_profiles())
+
+    conn.execute(PROFILES_TABLE.insert(), profiles)
+    yield profiles
+    conn.execute(PROFILES_TABLE.delete())

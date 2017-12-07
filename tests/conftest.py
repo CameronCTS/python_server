@@ -45,3 +45,12 @@ def peopledb_conn(scope="module"):
     conn = engine.connect()
     yield conn
     conn.close()
+
+
+@pytest.fixture()
+def archivesdb_conn(scope="module"):
+    engine = create_engine(
+        'sqlite:///databases/archives.db?check_same_thread=False')
+    conn = engine.connect()
+    yield conn
+    conn.close()
