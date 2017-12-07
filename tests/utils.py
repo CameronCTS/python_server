@@ -147,27 +147,25 @@ def edit(generator, changes):
 
 # Generator to create archived user profiles
 def gen_profiles(number=5):
-        """Generate Mask profilesaskanythings
+    """Generate Mask profilesaskanythings
 
-        Keyword Arguments:
-        number(int) -- The upper limit of generated records (default 5)
+    Keyword Arguments:
+    number(int) -- The upper limit of generated records (default 5)
 
-        Yields:
-        dict        -- Record information
+    Yields:
+    dict        -- Record information
 
-        """
-        for i in xrange(number):
-            username = "test.profile"
-            username += `i`
+    """
+    for i in xrange(number):
 
-            yield {
-                "id" : 100 + i,
-                "wwuid": 9000000 + i,
-                "photo": "profiles/1617/00958-2019687.jpg",
-                "majors": "Computer Science",
-                "username" : username, #Generates a new username archived.profile0, archived.profile1, etc.
-                "gender": "female"
-        }
+        yield {
+            "id" : 100 + i,
+            "wwuid": 9000000 + i,
+            "photo": "profiles/1617/00958-2019687.jpg",
+            "majors": "Computer Science",
+            "username" : "test.profile" + `i`,
+            "gender": "female"
+    }
 
 
 @contextmanager
